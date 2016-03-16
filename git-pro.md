@@ -51,6 +51,11 @@ Refer to: https://github.com/github/gitignore if you want a starting point for y
 5. **git diff** compares what is in your working directory with what is in your staging area, i.e., the changes you've made that you haven't yet staged.
 **git diff --staged** (or --cached) compares your staged changes to your last commit. 
 Run **git difftool --tool-help** to see what diff tools are available on your system.
+6. Use -a option to the **git commit** command makes Git skipping the staging area
+7. To remove a file from Git, you have to remove it from your tracking files and then commit. **git rm** command also removes the file from your working direcotry. If you modified the file and added it to the index already, you must force the removal with the -f option.
+Use **git rm --cached** to keep the file in working tree but remove it from staging area.
+```git rm log/\*.log```. Note the backslash (\) in front of the *. This is necessary because Git does its own filename expansion in addition to your shell's filename expansion.
+8. ```git mv file_from file_to``` rename a file in Git.
 
 
 ## Chapter 10
