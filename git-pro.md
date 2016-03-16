@@ -48,7 +48,10 @@ Glob patterns are like simplified regular expressions that shells use. And you c
 /TODO
 ```
 Refer to: https://github.com/github/gitignore if you want a starting point for your project.
-5. 
+5. **git diff** compares what is in your working directory with what is in your staging area, i.e., the changes you've made that you haven't yet staged.
+**git diff --staged** (or --cached) compares your staged changes to your last commit. 
+Run **git difftool --tool-help** to see what diff tools are available on your system.
+
 
 ## Chapter 10
 1. When you run **git init** in a new or existing directory, Git creates the .git directory, which is where almost everything that Git stores and manipulates is located. If you want to back up or clone your repository, copying this single directory elsewhere gives you nearly everything you need.
