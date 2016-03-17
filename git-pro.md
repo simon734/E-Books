@@ -74,7 +74,27 @@ By default, the ```git clone``` command automatically sets up your local master 
 15. Inspecting a remote:```git remote show <remote-name>```. 
 Rename a remote:```git remote rename <old-name> <new-name>```
 Removing a reomte:```git remote rm <shortname>```
+16. Listing your tags:```git tag```.  You can search for tags with a particular pattern, ```git tag -l "v1.8.5*"```.
+17. Git uses two main types of tags: lightweight and annotated.
+ * A lightweight tag is very much like a branch that doesn't change - it's just a pointer to a specific commit. ```git tag v1.4```
+ * Annotated tags are stored as full objects in the Git database. ```git tag -a v1.4 -m "my version 1.4```
+It's generally recommended that you create annotated tags so you can have all this information; but if you want a temporary tag, lightweigh tags are available too.
+ * Show the tag data:```git show v1.4```
+18. Tagging later. You can add a tag after the commit, by specifying the commit checksum (or part of it) at the end of command:
+```gti tag -a v1.2 9fceb02```
+19. By default, the **git push** command doesn't transfer tags to remote servers. You will have to explicitly push tags to a shared server after you have created them: ```git push origin <tagname>```, or ```git push origin --tags```.
+20. You can't really check out a tag in Git, since they can't be moved around. You can create a new branch at a specific tag with the command: ```git checkout -b [branchname] [tagname]```.
+21. Git Aliases:
+```
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -l HEAD'
+```
+If you want to run an external command, you start the command with a ! character.
+```git config --global alias.visual '!gitk'```
 
+## Chapter 3 Git Branching
 
 
 ## Chapter 10
