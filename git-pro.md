@@ -56,6 +56,22 @@ Run **git difftool --tool-help** to see what diff tools are available on your sy
 Use **git rm --cached** to keep the file in working tree but remove it from staging area.
 ```git rm log/\*.log```. Note the backslash (\) in front of the *. This is necessary because Git does its own filename expansion in addition to your shell's filename expansion.
 8. ```git mv file_from file_to``` rename a file in Git.
+9. ```git commit --amend```, this command takes your staging area and uses it for the commit. If you've made no changes since your last commit, then your snapshot will look exactly the same, and all you'll change is your commit message.
+```
+git commit -m 'initial commit'
+git add forgotten_file
+git commit --amend
+```
+You end up with a single commit, -- the second replaces the result of the first.
+10. Use ```git reset HEAD <file>``` to unstaged.
+11. Unmodifying a modified file:```git checkout -- <file>``` 
+12. Showing your remote: ```git remote -v```.  **clone** command implicitly adds the *origin* remote for you.
+To add a new remote Git repository as a shortname, you can reference easily, use ```git remote add <shortname> <url>```.
+13. Fetching and Pulling from your remotes: ```git fetch <remote_name>```. After this, you should have references to all the branches from that remote.
+It's important to note that the **git fetch** command only downloads the data to your local repository - it doesn't automatically merge it with any of your work or modify what you're currently working on. You have to merge it manually into your work. If your current branch is set up to track a remote branch, you can use the ```git pull``` command to automatically fetch and then merge that remote branch into your current branch.
+By default, the ```git clone``` command automatically sets up your local master branch to track the remote branch on the server you cloned from.
+14. Pushing to your remotes:```git push <remote-name> <branch-name>```, like ```git push origin master```. If you and someone else clone at the same time and they push upstream, your push will rightly be rejected. You'll have to fetch first and incorporate it into yours before you'll be allowed to push.
+
 
 
 ## Chapter 10
