@@ -71,6 +71,9 @@ To add a new remote Git repository as a shortname, you can reference easily, use
 It's important to note that the **git fetch** command only downloads the data to your local repository - it doesn't automatically merge it with any of your work or modify what you're currently working on. You have to merge it manually into your work. If your current branch is set up to track a remote branch, you can use the ```git pull``` command to automatically fetch and then merge that remote branch into your current branch.
 By default, the ```git clone``` command automatically sets up your local master branch to track the remote branch on the server you cloned from.
 14. Pushing to your remotes:```git push <remote-name> <branch-name>```, like ```git push origin master```. If you and someone else clone at the same time and they push upstream, your push will rightly be rejected. You'll have to fetch first and incorporate it into yours before you'll be allowed to push.
+15. Inspecting a remote:```git remote show <remote-name>```. 
+Rename a remote:```git remote rename <old-name> <new-name>```
+Removing a reomte:```git remote rm <shortname>```
 
 
 
