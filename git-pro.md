@@ -95,6 +95,43 @@ If you want to run an external command, you start the command with a ! character
 ```git config --global alias.visual '!gitk'```
 
 ## Chapter 3 Git Branching
+1. Creating a new branch: git branch testing.
+In Git, HEAD is pointer to the local branch you're currently on.
+To show you where the branch pointers are pointing, use: ```git log --oneline --decorate```
+2. Switching branches: ```git checkout testing```. If you switch to an older branch, your working directory will be reverted to look like it did the last time you committed on that branch. If Git cannot do it clearly, it will not let you switch at all. It's best to have clean working state when you switch branches.
+3. ```git log --oneline --decorate --graph --all```, it will print out the history of your commits, showing where your branch pointers are and how your history has diverged. 
+4. To create a branch and switch to it at the same time, use:```git checkout -b <name>```.  
+5. To merge *hotfix* back into your *master* branch:
+```
+git checkout master
+git merge hotfix
+```
+Instead of just moving the branch pointer forward, Git creates a new snapshot that results from a three-way merge and automatically creates a new commit that points to it. This is refered to as a **merge commit**, and is special in that it has more than one parent.
+6. To delete a branch: ```git branch -d hotfix```
+7. If you want to use a graphical tool to resolve the conflict, use:```git mergetool```. Run ```git status``` to verify that all conflicts have been resolved. And run ```git commit``` to finalize the merge commit.
+8. To see the last commit on each branch, run:```git branch -v```. The useful **--merged** and **--no-merged** options can filter this list to branches that you have or have not yet merged into the branch you're currently on.
+```git branch --merged```, branches on this list without the \* in front of them are generally fine to delete. 
+An not-merged branch contains work that isn't merged in yet, trying to delete it with **git branch -d** will fail, if not forced with -D.
+9. Remote references are references (pointers) in your remote repositories, including branches, tags, and so on. You can get a full list of remote references explicitly with ```git ls-remote [remote]```, or ```git remote show [remote]```.
+10. Remote-tracking branches are references to the state of remote branches. They're local references that you can't move; they're moved automatically for you whenever you do any network communication. Remote-tracking branches act as bookmarks to remind you where the branches in your remote repositories were that last time you connected to them. They take the form (remote)/(branch), like *origin/master*.
+11. To push a branch you want to share, run:```git push <remote> <branch>```. If you have a branch named **serverfix**, run:```git push origin serverfix```.
+Git automatically expands the **serverfix** branchname out to *refs/heads/serverfix:refs/heads/serverfix*, which means, "take my serverfix local branch and push it to update the remote's serverfix branch". You can also do **git push origin serverfix:serverfix**, which does the same thing, it says, "take my serverfix and make it the remote's serverfix". To use a different name on the remote, ```git push origin serverfix:awesomefix```.
+12. It's important to note that when you do a fetch that brings down new remote-tracking branches, you don't automatically have local, editable copies of them.You only have a pointer that you can't modify. To merge a remote-tracking branch, run ```git merge origin/serverfix```. If you want your own **serverfix** branch that you can work on, run: ```git checkout -b serverfix origin/serverfix```.
+13. Checking out a local branch from a remote-tracking branch automatically creates what is called a "tracking branch" (and the branch it tracks is called an "upstream branch"). Tracking branches are local branches that have a direct relationship to a remote branch. If you're on a tracking branch and type **git pull**, Git automatically knows which server to fetch from and branch to merge into.
+Run:```git checkout -b [branch] [remote]/branch]```. Git provides the **--track** shorthand for this: ```git checkout --track origin/serverfix```.
+In fact, this is so common that there's even a shortcut for that shortcut. If the branch name you're trying to checkout (a) doesn't exist and (b) exactly matches a name on only one remote, Git will create a tracking branch for you. Run:```git checkout serverfix```.
+If you already have a local branch and want to set it to a remote branch you just pulled down, or want to change the upstream branch you're tracking, you can use the **-u** or **--set-upstream-to** option: ```git branch -u origin/serverfix```.
+14. When you have a tracking branch set up, you can reference its upstream branch with the **@{upstream}** or **@{u}** shorthand, like ```git merge @{u}``` instead of ```git merge origin/master``` if you wish.
+15. To see what tracking branches you have set up, run:```git branch -vv```. This will list out your local branches with more information including what each branch is tracking and if your local branch is ahead, behind or both. This command does not reach out to the servers, it's telling you about what it has cached from these servers locally. If you want totally up to date ahead and behind numbers, you'll need to fetch from all your remotes right before running this. run:```git fetch --all; git branch -vv```.
+16. Generally it's better to simply use the **fetch** and **merge** commands explicitly as the magic of **git pull** can often be confusing.
+17. If you want to delete your **serverfix** branch from the server, run ```git push origin --delete serverfix```. Basically all this does is remove the pointer from the server. The Git server will generally keep the data there for a while until a garbage collection runs, so if it was accidentally deleted, it's often easy to recover.
+18. With the **rebase** command, you can take all the changes that were committed on one branch and reply them on another one.
+19. **Do not rebase commits that exist outside your repository.**
+
+## Chapter 4 Git on the server
+1. 
+
+
 
 
 ## Chapter 10
