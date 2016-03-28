@@ -53,3 +53,17 @@ Return to the cursor position before the latest jump (undo the jump).
  % 
 Jump to corresponding item, e.g. from an open brace to its matching closing brace.
 
+\<bar\>
+matches bar but neither foobar nor barbaz nor foobarbaz.
+
+Use it like this in a substitution:
+
+:s/\<bar\>/baz
+Use it like this to list all the lines containing the whole word bar:
+
+:g/\<bar\>
+:h pattern is a good read.
+
+:set number
+:set encoding=utf-8
+
