@@ -67,4 +67,10 @@ Use it like this to list all the lines containing the whole word bar:
 :set number
 :set encoding=utf-8
 
-Add ```language messages en``` in the _vimrc file to change to english language
+Add
+```
+let $LANG = 'en'
+set langmenu=none
+``` 
+in the _vimrc file to change to english language
+
