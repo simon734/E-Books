@@ -131,7 +131,9 @@ If you already have a local branch and want to set it to a remote branch you jus
 ## Chapter 4 Git on the server
 1. 
 
-
+## Chapter 9 Git and Other systems
+1. It's important to note that when you're using **git svn**, you're interacting with Subversion. Although you can do local branching and merging, it's generally best to keep your history as linear as possible by rebasing your work, and avoiding doing things like simultaneously interacting with a Git remote repository.
+Don't rewrite your history and try to push again, and don't push to a parallel Git repository to collaborate with fellow Git developers at the same time. Subversion can have only a single linear history, and confusing it is very easy. Make sure everyone is using the SVN server to collaborate.
 
 
 ## Chapter 10
