@@ -98,3 +98,29 @@ set langmenu=none
 ``` 
 in the _vimrc file to change to english language
 
+C-R Insert the contents of a numbered or named register.
+		Special registers:
+			'"'	the unnamed register, containing the text of
+				the last delete or yank
+			'%'	the current file name
+			'#'	the alternate file name
+			'*'	the clipboard contents (X11: primary selection)
+			'+'	the clipboard contents
+			'/'	the last search pattern
+			':'	the last command-line
+			'-'	the last small (less than a line) delete
+			'.'	the last inserted text
+							*c_CTRL-R_=*
+			'='	the expression register
+
+You can use redir to send it to a file:
+:redir > file
+:g/for.*bar/#
+:redir END
+
+Or to a register:
+:redir @a
+:g/for.*bar/#
+:redir END
+
+

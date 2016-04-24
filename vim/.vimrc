@@ -53,7 +53,8 @@ if WINDOWS()
     if has('multi_byte')
         " Windows cmd.exe still uses cp850. If Windows ever moved to
         " Powershell as the primary terminal, this would be utf-8
-        set termencoding=cp850
+        "set termencoding=cp850
+        set termencoding=gb18030
         " Let Vim use utf-8 internally, because many scripts require this
         set encoding=utf-8
         setglobal fileencoding=utf-8
@@ -61,7 +62,7 @@ if WINDOWS()
         " fallback into cp1252 instead of eg. iso-8859-15.
         " Newer Windows files might contain utf-8 or utf-16 LE so we might
         " want to try them first.
-        "set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
+        " set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
         set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp1252
     endif
 
@@ -114,8 +115,8 @@ syntax on " required
 "/////////////////////////////////////////////////////////////////////////////
 
 if has('gui_running')
-    set background=dark
-    colorscheme solarized
+    "set background=dark
+    "colorscheme solarized
 else
     set background=dark
     set t_Co=256 " make sure our terminal use 256 color
@@ -123,9 +124,6 @@ else
     colorscheme desert
 endif
 " colorscheme exlightgray
-
-set colorcolumn=100
-highlight ColorColumn ctermbg=darkgray
 
 "/////////////////////////////////////////////////////////////////////////////
 " General
@@ -484,6 +482,9 @@ vnoremap > >gv
 " map Up & Down to gj & gk, helpful for wrap text edit
 noremap <Up> gk
 noremap <Down> gj
+
+" to search for visually selected text
+vnoremap // y/<C-R>"<CR>
 
 " TODO: I should write a better one, make it as plugin exvim/swapword
 " VimTip 329: A map for swapping words
