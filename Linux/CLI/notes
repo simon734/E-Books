@@ -1,0 +1,143 @@
+## A command can be one of four diffenent things:
+    * An executable program.
+    * A command built into the shell itself.
+    * A shell function. These are miniature shell scripts incorporated int the environment.
+    * An alias.
+
+* Some useful commands:
+    * type - indicate how a command name is interpreted
+    * which - display which executable program will be executed
+    * help - get help for shell builtins
+    * man - display a command's manual page
+    * apropos - display a list of appropriate commands
+    * info - display a command's info entry
+    * whatis - display a very brief description of a command
+    * alias - create an alias for a command
+
+* Man pages do not usually includes examples, and are inteded as a reference, not a tutorial.
+* **man** uses **less** to display the manual pages.
+* Man Page Organization: Section  --> Contents
+    * 1 User commands
+    * 2 Programming interfaces for kernel system calls
+    * 3 Programming intefaces to the C library
+    * 4 Special files such as device nodes and drivers
+    * 5 File formats
+    * 6 Games and amusements such as screen savers
+    * 7 Miscellaneous
+    * 8 System administration commands
+* Without specifying a section number, we will always get the first instance of a match.
+* The **man** command with the '-k' option performs the exact same fucntion as **apropos**.
+* Try **whatis socket**.
+* The GNU Project provides an alternative to man pages for their programs, called **info**.
+* Many software packages installed on your system have documentation files residing in the **/usr/share/doc** directory. The gzip package includes a special version of **less** called **zless** that will display the contents of gzip-compressed text files.
+* Put more than one command on a line by separating each command with a semicolon character.
+* Naming an alias with an existing command name is often done to apply a commonly desired option to each invocation of a common command.
+* The Bash Reference Manual is a reference guide to the bash shell. It’s still a reference work but contains examples and is easier to read than the bash man page. http://www.gnu.org/software/bash/manual/bashref.html
+* The GNU Project provides extensive documentation for its programs, which form the core of the Linux command line experience. You can see a complete list here: http://www.gnu.org/manual/manual.html
+* To truncate a file (or create a new, empty file), we can use a trick like: **> output.txt**
+* Redirecting stardard output and standard error to one file:
+    * (Traditional)command > output_file 2>&1
+    * (Recent bash supports more streamlined method) command &> output_file
+* Disposing of unwanted output: **2> /dev/null**
+* Join files together: cat movie.mpeg.0* > movie.mpeg
+    * Since wildcards always expand in sorted order, the arguments will be arranged in the correct order.
+* Type **Ctrl-d** to tell **cat** that it has reached EOF on standard input.
+* **cat > filename.txt**, we can create a new file.
+* tee -- Read from stdin and output to stdout and files
+* Tilde Expansion: echo ~simon
+* Arithmetic expansion uses the form: **$((expression))**, for example, echo $((2+2)). Only support integers (whole numbers, no decimals).
+    * Spances are not significant in arithmetic expressions and expressions may be nested. echo $(($((5\*\*2)) * 3))
+    * Single parentheses may be used to group multiple subexpressions. Like: echo $(((5 \*\* 2) * 3))
+* Brace Expansion and examples:
+    * echo Front-{A,B,C}-Back
+    * echo Number_{1..5}
+    * echo {01..15}
+    * echo {001..15}
+    * echo {Z..A}
+    * echo a{A{1,2}, B{3,4}}b
+    * echo {2007..2009}-{01..12}
+* Parameter Expansion: echo $USER; printenv | less
+* Command substitution and examples:
+    * echo $(ls)
+    * ls -l $(which cp)
+    * file $(ls -d /usr/bin/* | grep zip)
+    * ls -l `which cp`
+* If we place text inside double quotes, all the special characters used by the shell lose their special meaning and are treated as ordinary characters. The exceptions are "$", "\", and "`". For example, echo "$USER $((2+2)) $(cal)"
+* Using single quotes to suppress all expansions.
+* The **bash** man page has major sections on both expansion and quoting.
+* Command Line Editing
+    * Cursor Movement Commands:
+        Ctrl-a Move cursor to the beginning of the line.
+        Ctrl-e Move cursor to the end of the line.
+        Ctrl-f Move cursor forward one character; same as the right arrow key.
+        Ctrl-b Move cursor backward one character; same as the left arrow key.
+        Alt-f Move cursor forward one word.
+        Alt-b Move cursor backward one word.
+        Ctrl-l Clear the screen and move the cursor to the top left corner. The clear command does the same thing.
+    * Text Editing Commands:
+        Ctrl-d Delete the character at the cursor location
+        Ctrl-t Transpose (exchange) the character at the cursor location with the one preceding it.
+        Alt-t Transpose the word at the cursor location with the one preceding it.
+        Alt-l Convert the characters from the cursor location to the end of the word to lowercase.
+        Alt-u Convert the characters from the cursor location to the end of the word to uppercase.
+    * Cut And Paste Commands:
+        Ctrl-k Kill text from the cursor location to the end of line.
+        Ctrl-u Kill text from the cursor location to the beginning of the line.
+        Alt-d Kill text from the cursor location to the end of the current word.
+        Alt-Backspace Kill text from the cursor location to the beginning of the current word. If the cursor is at the beginning of a word, kill the previous word.
+        Ctrl-y Yank text from the kill-ring and insert it at the cursor location.
+* Completion will work on pathnames, variables (if the beginning of the word is a "$"), use names (if the word begins with "~"), commands (if the word is the first word on the line) and hostnames (if the beginning of the word is "@"). Hostname completion only works for hostnames listed in **/etc/hosts**.
+* Completion Commands:
+    Alt-? Display list of possible completions. On most systems you can also do this by pressing the tab key a second time, which is much easier.
+    Alt-* Insert all possible completions. This is useful when you want to use more than one possible match.
+* History Commands:
+    Ctrl-p Move to the previous history entry. Same action as the up arrow.
+    Ctrl-n Move to the next history entry. Same action as the down arrow.
+    Alt-< Move to the beginning (top) of the history list.
+    Alt-> Move to the end (bottom) of the history list, i.e., the current command line.
+    Ctrl-r Reverse incremental search. Searches incrementally from the current command line up the history list.
+    Alt-p Reverse search, non-incremental. With this key, type in the search string and press enter before the search is performed.
+    Alt-n Forward search, non-incremental.
+    Ctrl-o Execute the current item in the history list and advance to the next one. This is handy if you are trying to re-execute a sequence of commands in the history list.
+* History Expansion Commands:
+    !! Repeat the last command. It is probably easier to press up arrow and enter.
+    !number Repeat history list item number.
+    !string Repeat last history list item starting with string.
+    !?string Repeat last history list item containing string.
+* **script** command can be used to record an entire shell session and store it in a a file.
+* /etc/passwd: user account definition, /etc/group: group definition, /etc/shadow: information about user's password.
+* File Types:
+    - File Type
+    d A directory.
+    l A symbolic link. Notice that with symbolic links, the remaining file attributes are always “rwxrwxrwx” and are dummy values. The real file attributes are those of the file the symbolic link points to.
+    c A character special file. This file type refers to a device that handles data as a stream of bytes, such as a terminal or modem.
+    b A block special file. This file type refers to a device that handles data in blocks, such as a hard drive or CD-ROM drive.
+* Permission Attributes:
+    r 
+    Files: Allows a file to be opened and read.
+    Directories: Allows a directory's contents to be listed if the execute attribute is also set.
+    w
+    Files: Allows a file to be written to or truncated, however this attribute does not allow files to be renamed or deleted. The ability to delete or rename files is determined by directory attributes.
+    Directories: Allows files within a directory to be created, deleted, and renamed if the execute attribute is also set.
+    x 
+    Files: Allows a file to be treated as a program and executed. Program files written in scripting languages must also be set as readable to be executed.
+    Directories: Allows a directory to be entered, e.g., cd directory.
+* chmod Sysbolic Notation Examples:
+    u+x Add execute permission for the owner.
+    u-x Remove execute permission from the owner.
+    +x Add execute permission for the owner, group, and world. Equivalent to a+x.
+    o-rw Remove the read and write permission from anyone besides the owner and group owner.
+    go=rw Set the group owner and anyone besides the owner to have read and write permission. If either the group owner or world previously had execute permissions, they are removed.
+    u+x,go=rx Add execute permission for the owner and set the permissions for the group and others to read and execute. Multiple specifications may be separated by commas.
+* setuid: When an ordinary user runs a program that is "setuid root", the program runs with the effective privileges of the superuser.
+* setgid: Newly created files in the directory will be given ownership of the directory rather the group ownership of the file's creator.
+* sticky bit: It prevents users from deleting or renaming files unless the user is either the owner of the directory, the owner of the file, or the superuser. This is often used to control access to a shared directory, such as /tmp.
+* Assigning setuid to a program: chmod u+s program, such as: -rwsr-xr-x
+* Assigning setgid to a directory: chmod g+s dir, such as: drwxrwsr-x
+* Assigning the sticky bit to a directory: chmod +t dir, such as: drwxrwxrwt
+* chown Argument Examples:
+    bob Changes the ownership of the file from its current owner to user bob.
+    bob:users Changes the ownership of the file from its current owner to user bob and changes the file group owner to group users.
+    :admins Changes the group owner to the group admins. The file owner is unchanged.
+    bob: Change the file owner from the current owner to user bob and changes the group owner to the login group of user bob.
+*
