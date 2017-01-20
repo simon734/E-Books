@@ -1,0 +1,2 @@
+#!python
+prxint 'hello world'
