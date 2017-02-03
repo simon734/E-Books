@@ -140,4 +140,114 @@
     bob:users Changes the ownership of the file from its current owner to user bob and changes the file group owner to group users.
     :admins Changes the group owner to the group admins. The file owner is unchanged.
     bob: Change the file owner from the current owner to user bob and changes the group owner to the login group of user bob.
-*
+* ps: Process States:
+    R Running. This means that the process is running or ready to run.
+    S Sleeping. The process is not running; rather, it is waiting for an event, such as a keystroke or network packet.
+    D Uninterruptible Sleep. Process is waiting for I/O such as a disk drive.
+    T Stopped. Process has been instructed to stop. 
+    Z A defunct or “zombie” process. This is a child process that has terminated, but has not been cleaned up by its parent.
+    < A high priority process. It's possible to grant more importance to a process, giving it more time on the CPU. This property of a process is called niceness. A process with high priority is said to be less nice because it's taking more of the CPU's time, which leaves less for everybody else.
+    N A low priority process. A process with low priority (a “nice” process) will only get processor time after other processes with higher priority have been serviced.
+* A popular set of option for ps is "aux" (without a leading dash).
+* Sending signals to processes with kill:
+    1 HUP Hangup. This is a vestige of the good old days when terminals were attached to remote computers with phone lines and modems. The
+    signal is used to indicate to programs that the controlling terminal has “hung up.” The effect of this signal can be demonstrated by closing a terminal session. The foreground program running on the terminal will be sent the signal and will terminate.
+    This signal is also used by many daemon programs to cause a reinitialization. This means that when a daemon is sent this signal, it will restart and re-read its configuration file. The Apache web server is an example of a daemon that uses the HUP signal in this way.
+    2 INT Interrupt. Performs the same function as the Ctrl-c key sent from the terminal. It will usually terminate a program.
+    9 KILL Kill. This signal is special. Whereas programs may choose to handle signals sent to them in different ways, including ignoring them all together, the KILL signal is never actually sent to
+    the target program. Rather, the kernel immediately terminates the process. When a process is terminated in this manner, it is given no opportunity to “clean up” after itself or save its work. For this reason, the KILL signal should only be used as a last resort when other termination signals fail.
+    15 TERM Terminate. This is the default signal sent by the kill command. If a program is still “alive” enough to receive signals, it will terminate.
+    18 CONT Continue. This will restore a process after a STOP signal.
+    19 STOP Stop. This signal causes a process to pause without terminating. Like the KILL signal, it is not sent to the target process, and thus it cannot be ignored.
+    3 QUIT Quit.
+    11 SEGV Segmentation Violation. This signal is sent if a program makes illegal use of memory, that is, it tried to write somewhere it was not allowed to.
+    20 TSTP Terminal Stop. This is the signal sent by the terminal when the Ctrl-z key is pressed. Unlike the STOP signal, the TSTP signal is received by the program but the program may choose to ignore it.
+    28 WINCH Window Change. This is the signal sent by the system when a window changes size. Some programs , like top and less will respond to this signal by redrawing themselves to fit the new window dimensions.
+* Send signals to multiple processes with killall matching a specified program or username.
+* You must have superuser privileges to send signals to processes that do not belong to you.
+* Other process related commands:
+    pstree Outputs a process list arranged in a tree-like pattern showing the parent/child relationships between processes.
+    vmstat Outputs a snapshot of system resource usage including, memory, swap and disk I/O. To see a continuous display, follow the command with a time delay (in seconds) for updates. For example: vmstat 5. Terminate the output with Ctrl-c.
+    xload A graphical program that draws a graph showing system load over time.
+    tload Similar to the xload program, but draws the graph in the terminal. Terminate the output with Ctrl-c.
+* The shell stores two basic types of data in the environment: environment variables and shell variables. shell variables are bits of data placed there by **bash**, and environment variables are everything else.
+* The **set** command will show both the shell and environment variables, while **printenv** will only display the latter.
+* Try: echo $HOME
+* Startup Files for login shell sessions:
+    /etc/profile A global configuration script that applies to all users.
+    ~/.bash_profile A user's personal startup file. Can be used to extend or override settings in the global configuration script.
+    ~/.bash_login If ~/.bash_profile is not found, bash attempts to read this script.
+    ~/.profile If neither ~/.bash_profile nor ~/.bash_login is found, bash attempts to read this file.
+* Startup Files for non-login shell sessions:
+    /etc/bash.bashrc A global configuration script that applies to all users.
+    ~/.bashrc A user's personal startup file. Can be used to extend or override settings in the global configuration script.
+* In addition to reading the startup files above, non-login shells also inherit the environment from their parent process, usually a login shell.
+* The changes made to **.bashrc** will not take affect until restart terminal session. We can use **source** command to re-read it.
+* The INVOCATION section of the **bash** man page covers the **bash** startup files in gory details.
+* Escape codes used in shell prompts:
+    \a ASCII bell. This makes the computer beep when it is encountered.
+    \d Current date in day, month, date format. For example, “Mon May 26.”
+    \h Hostname of the local machine minus the trailing domain name.
+    \H Full hostname.
+    \j Number of jobs running in the current shell session.
+    \l Name of the current terminal device.
+    \n A newline character.
+    \r A carriage return.
+    \s Name of the shell program.
+    \t Current time in 24 hour hours:minutes:seconds format.
+    \T Current time in 12 hour format.
+    \@ Current time in 12 hour AM/PM format.
+    \A Current time in 24 hour hours:minutes format.
+    \u username of the current user.
+    \v Version number of the shell.
+    \V Version and release numbers of the shell.
+    \w Name of the current working directory.
+    \W Last part of the current working directory name.
+    \! History number of the current command.
+    \# Number of commands entered during this shell session.
+    \$ This displays a “$” character unless we have superuser privileges. In that case, it displays a “#” instead.
+    \[ Signals the start of a series of one or more non-printing characters. This is used to embed non-printing control characters which manipulate the terminal emulator in some way, such as moving the cursor or changing text colors.
+    \] Signals the end of a non-printing character sequence.
+* Packaging management systems usually consist of two types of tools: low-level tools which handle tasks such as installing and removing package files, and high-level tools that perform metadata searching and dependency resolution.
+* Finding a package in a repository: yum search search_string
+* Installing a package from a repository: yum install package_name
+* Installing a package from a package file: rpm -i package_file
+* Removing a package: yum erase package_name
+* Updating packages from a repository: yum update
+* Updating a package from a package file: rpm -U package_file
+* Listing installed packages: rpm -qa
+* Determining if a package is installed: rpm -q package_name
+* Displaying info about an installed package: yum info package_name
+* Finding which package installed a File: rpm -qf file_name, such as: rpm -qf /usr/bin/vim
+
+** Next
+* mount – Mount a file system
+● umount – Unmount a file system
+● fsck – Check and repair a file system
+● fdisk – Partition table manipulator
+● mkfs – Create a file system
+● fdformat – Format a floppy disk
+● dd – Write block oriented data directly to a device
+● genisoimage (mkisofs) – Create an ISO 9660 image file
+● wodim (cdrecord) – Write data to optical storage media
+● md5sum – Calculate an MD5 checksum
+* **/etc/fstab** (short for "file system table") lists the devices (typcially hard disk partitions) that are to be mounted at boot time.
+* Unmounting a device entails writing all the remaining data to the device so that is can be safely removed.
+* For new devices: 1. create a new partition 2. create file system on the drive
+* Manipulate partitions with **fdisk**: we must first umount it (if needed) and then invoke the **fdisk**, such as: fdisk /dev/sdb, not /dev/sdb1
+* Create a new file system with **mkfs**: mkfs -t ext4 /dev/sdb1
+* Testing and repairing file systems: fsch
+* Formatting floppy disks:
+    fdformat /dev/fd0
+    mkfs -t msdos /dev/fd0
+* Moving data directly to/from devices: dd if=/dev/sdb of=/dev/sdc
+* Create an image copy of a cdrom: dd if=/dev/cdrom of=ubuntu.iso
+* Create an image from a collection of files: genisoimage -o cdrom.iso -R -J ~/cd-rom-files.  
+* Mount an iso image directly: mount -t iso9660 -o loop image.iso /mnt/iso_image* Blanking a re-writable CD-ROW: wodim dev=/dev/cdrw black=fast
+* Writing an image: wodim dev=/dev/cdrw image.iso
+* The **ip** program replaces the earlier and now deprecated **ifconfig** prograom.
+* To examine the network interfaces: netstat -ie
+* To display the kernel's network routing table: netstat -r
+* ssh allows us to execute a single command on a remote system, such as: ssh remote-sys free
+* sftp has an important advantage over conventional ftp in that it does not require an FTP server to be running on the remote host. It only requires the SSH server.
+* 
