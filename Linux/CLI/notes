@@ -250,4 +250,64 @@
 * To display the kernel's network routing table: netstat -r
 * ssh allows us to execute a single command on a remote system, such as: ssh remote-sys free
 * sftp has an important advantage over conventional ftp in that it does not require an FTP server to be running on the remote host. It only requires the SSH server.
+* locate -- Find files by name
+* find -- search for files in a directory hierarchy, through application of options, tests and criteria. Examples:
+    * find ~ \( -type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)
+    * Predefined Actions: -delete, -ls, -print, -quit
+    * The order of the tests and actions is important.
+    * find ~ -name "*.jpg" -exec rm '{}' ';'
+    * find ~ -type f -name 'foo*' -ok ls -l '{}' ';'
+    * Improving Efficiency (combine the results of the search into an argument list): find ~ -type f -name 'foo*' -exec ls -l '{}' +
+    * find ~ -type f -name 'foo*' -print | xargs ls -l
+    * Funny filenames: find ~ -iname '*.jgp' -print0 | args --null ls -l
+* xargs -- Build and execute command lines from standard input
+* The file compression programs: gzip/gunzip/zcat/zless, bzip2/bunzip2/bzcat/bip2recover
+    * gzip Options:
+    * -c Write output to standard output and keep original files. May also be specified with --stdout and --to-stdout.
+    -d Decompress. This causes gzip to act like gunzip. May also be specified with --decompress or --uncompress.
+    -f Force compression even if a compressed version of the original file already exists. May also be specified with --force.
+    -h Display usage information. May also be specified with --help.
+    -l List compression statistics for each file compressed. May also be specified with --list.
+    -r If one or more arguments on the command line are directories, recursively compress files contained within them. May also be specified with --recursive.
+    -t Test the integrity of a compressed file. May also be specified with --test.
+    -v Display verbose messages while compressing. May also be specified with --verbose.
+    -number Set amount of compression. number is an integer in the range of 1 (fastest, least compression) to 9 (slowest, most compression). The values 1 and 9 may also be expressed as --fast and --best, respectively. The default value is 6.
+    * Examples:
+    * gzip -d -c foo.txt.gz | less
+    * ls -l /etc | gzip > foo.txt.gz
 * 
+* The archiving programs: tar, zip
+* tar mode[options] pathname...
+    * tar Modes:
+    * c Create an archive from a list of files and/or directories.
+    x Extract an archive.
+    r Append specified pathnames to the end of an archive.
+    t List the contents of an archive.
+    * Examples:
+    * tar xf archive.tar --wildcards 'home/simon/palyground/dir-*/file-A'
+    * find playground -name 'file-A' -exec tar rf archive.bar '{}' '+'
+    * find playground -name 'file-A' | tar cf - --files-from=- | gzip > archive.tgz
+    * find playground -name 'file-A' | tar cjf archive.tbz -T -
+* Transferring files between systems over a network: ssh remote-sys 'tar cf - Documents' | tar xf -
+* The main use of zip/unzip programs is for exchanging files with Windows system. 
+* Examples:
+* zip -r archive.zip playground
+* unzip -l archive.zip playground/dir-001/file_Z
+* find playground -name 'file-A' | zip -@ file-A.zip
+* ls -l /etc/ | zip ls-etc.zip -
+* unzip -p ls-etc.zip | less
+* rsync: remote file and directory synchronization. rsync options source dest, where source and dest are one of the following:
+    * a local file or directory
+    * a remote file or directory in the form of [user@]host:path
+    * a remote rsync server specified with a URI of rsync://[user@]host[:port]/path
+* Examples: rsync -av --delete playground foo
+* When passing regular expressions containing metacharacters on the command line, it is vital that they are enclosed in quotes to prevent the shell from attempting to expand them.
+* The regular expression '^$' will match blank lines.
+* The caret ^ character only invokes negation if it is the first character within a bracket expression; otherwise, it loses its special meaning.
+* Systems using ASCII used a collation order: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+* This differs from proper dictionary order: aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+* Two different results:
+    * ls /usr/sbin/[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*
+    * ls /usr/sbin/[A-Z]*
+* To partially work around this problem, the POSIX standard includes a number of character classes which provides useful ranges of characters. But there is still no convenient way to express partial ranges, such as [A-M].
+*
