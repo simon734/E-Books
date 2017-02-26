@@ -1,4 +1,4 @@
-## A command can be one of four diffenent things:
+* A command can be one of four diffenent things:
     * An executable program.
     * A command built into the shell itself.
     * A shell function. These are miniature shell scripts incorporated int the environment.
@@ -220,17 +220,16 @@
 * Displaying info about an installed package: yum info package_name
 * Finding which package installed a File: rpm -qf file_name, such as: rpm -qf /usr/bin/vim
 
-** Next
 * mount – Mount a file system
-● umount – Unmount a file system
-● fsck – Check and repair a file system
-● fdisk – Partition table manipulator
-● mkfs – Create a file system
-● fdformat – Format a floppy disk
-● dd – Write block oriented data directly to a device
-● genisoimage (mkisofs) – Create an ISO 9660 image file
-● wodim (cdrecord) – Write data to optical storage media
-● md5sum – Calculate an MD5 checksum
+    * umount – Unmount a file system
+    * fsck – Check and repair a file system
+    * fdisk – Partition table manipulator
+    * mkfs – Create a file system
+    * fdformat – Format a floppy disk
+    * dd – Write block oriented data directly to a device
+    * genisoimage (mkisofs) – Create an ISO 9660 image file
+    * wodim (cdrecord) – Write data to optical storage media
+    * md5sum – Calculate an MD5 checksum
 * **/etc/fstab** (short for "file system table") lists the devices (typcially hard disk partitions) that are to be mounted at boot time.
 * Unmounting a device entails writing all the remaining data to the device so that is can be safely removed.
 * For new devices: 1. create a new partition 2. create file system on the drive
@@ -243,7 +242,8 @@
 * Moving data directly to/from devices: dd if=/dev/sdb of=/dev/sdc
 * Create an image copy of a cdrom: dd if=/dev/cdrom of=ubuntu.iso
 * Create an image from a collection of files: genisoimage -o cdrom.iso -R -J ~/cd-rom-files.  
-* Mount an iso image directly: mount -t iso9660 -o loop image.iso /mnt/iso_image* Blanking a re-writable CD-ROW: wodim dev=/dev/cdrw black=fast
+* Mount an iso image directly: mount -t iso9660 -o loop image.iso /mnt/iso_image
+* Blanking a re-writable CD-ROW: wodim dev=/dev/cdrw black=fast
 * Writing an image: wodim dev=/dev/cdrw image.iso
 * The **ip** program replaces the earlier and now deprecated **ifconfig** prograom.
 * To examine the network interfaces: netstat -ie
@@ -255,36 +255,36 @@
     * find ~ \( -type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)
     * Predefined Actions: -delete, -ls, -print, -quit
     * The order of the tests and actions is important.
-    * find ~ -name "*.jpg" -exec rm '{}' ';'
-    * find ~ -type f -name 'foo*' -ok ls -l '{}' ';'
-    * Improving Efficiency (combine the results of the search into an argument list): find ~ -type f -name 'foo*' -exec ls -l '{}' +
-    * find ~ -type f -name 'foo*' -print | xargs ls -l
-    * Funny filenames: find ~ -iname '*.jgp' -print0 | args --null ls -l
+    * find ~ -name "\*.jpg" -exec rm '{}' ';'
+    * find ~ -type f -name 'foo\*' -ok ls -l '{}' ';'
+    * Improving Efficiency (combine the results of the search into an argument list): find ~ -type f -name 'foo\*' -exec ls -l '{}' +
+    * find ~ -type f -name 'foo\*' -print | xargs ls -l
+    * Funny filenames: find ~ -iname '\*.jgp' -print0 | args --null ls -l
 * xargs -- Build and execute command lines from standard input
-* The file compression programs: gzip/gunzip/zcat/zless, bzip2/bunzip2/bzcat/bip2recover
-    * gzip Options:
+* The file compression programs: **<font color='red'>gzip/gunzip/zcat/zless</font>**, **<font color='blue'>bzip2/bunzip2/bzcat/bip2recover</font>**
+    * **gzip Options**:
     * -c Write output to standard output and keep original files. May also be specified with --stdout and --to-stdout.
-    -d Decompress. This causes gzip to act like gunzip. May also be specified with --decompress or --uncompress.
-    -f Force compression even if a compressed version of the original file already exists. May also be specified with --force.
-    -h Display usage information. May also be specified with --help.
-    -l List compression statistics for each file compressed. May also be specified with --list.
-    -r If one or more arguments on the command line are directories, recursively compress files contained within them. May also be specified with --recursive.
-    -t Test the integrity of a compressed file. May also be specified with --test.
-    -v Display verbose messages while compressing. May also be specified with --verbose.
-    -number Set amount of compression. number is an integer in the range of 1 (fastest, least compression) to 9 (slowest, most compression). The values 1 and 9 may also be expressed as --fast and --best, respectively. The default value is 6.
-    * Examples:
+    * -d Decompress. This causes gzip to act like gunzip. May also be specified with --decompress or --uncompress.
+    * -f Force compression even if a compressed version of the original file already exists. May also be specified with --force.
+    * -h Display usage information. May also be specified with --help.
+    * -l List compression statistics for each file compressed. May also be specified with --list.
+    * -r If one or more arguments on the command line are directories, recursively compress files contained within them. May also be specified with --recursive.
+    * -t Test the integrity of a compressed file. May also be specified with --test.
+    * -v Display verbose messages while compressing. May also be specified with --verbose.
+    * -number Set amount of compression. number is an integer in the range of 1 (fastest, least compression) to 9 (slowest, most compression). The values 1 and 9 may also be expressed as --fast and --best, respectively. The default value is 6.
+    * **Examples**:
     * gzip -d -c foo.txt.gz | less
     * ls -l /etc | gzip > foo.txt.gz
 * 
 * The archiving programs: tar, zip
 * tar mode[options] pathname...
-    * tar Modes:
+    * **tar Modes**:
     * c Create an archive from a list of files and/or directories.
-    x Extract an archive.
-    r Append specified pathnames to the end of an archive.
-    t List the contents of an archive.
-    * Examples:
-    * tar xf archive.tar --wildcards 'home/simon/palyground/dir-*/file-A'
+    * x Extract an archive.
+    * r Append specified pathnames to the end of an archive.
+    * t List the contents of an archive.
+    * **Examples**:
+    * tar xf archive.tar --wildcards 'home/simon/palyground/dir-\*/file-A'
     * find playground -name 'file-A' -exec tar rf archive.bar '{}' '+'
     * find playground -name 'file-A' | tar cf - --files-from=- | gzip > archive.tgz
     * find playground -name 'file-A' | tar cjf archive.tbz -T -
@@ -307,8 +307,8 @@
 * Systems using ASCII used a collation order: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 * This differs from proper dictionary order: aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
 * Two different results:
-    * ls /usr/sbin/[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*
-    * ls /usr/sbin/[A-Z]*
+    * ls /usr/sbin/[ABCDEFGHIJKLMNOPQRSTUVWXYZ]\*
+    * ls /usr/sbin/[A-Z]\*
 * To partially work around this problem, the POSIX standard includes a number of character classes which provides useful ranges of characters. But there is still no convenient way to express partial ranges, such as [A-M].
 * The grep supports extends regular expressions when the -E option is used. Or we can just use egrep.
     * grep -Eh '^(bz|gz|zip)' filelist
@@ -316,7 +316,7 @@
 * Basic regular expressions (BRE) metacharacters: ^ $ . [ ] *
 * Extended regular expressions (ERE) metacharacters: ( ) { } ? + |
 * The "(", ")", "{" and "}" characters are treated as metacharacters in BRE if they are escaped with a backslash, whereas with ERE, preceding any metacharacter with a backslash causes it to be literal.
-* Sentence search: echo "This works." | grep -E '[[:upper:]][[:upper:][:lower:] ]*\.'
+* Sentence search: echo "This works." | grep -E '[[:upper:]][[:upper:][:lower:] ]\*\.'
 * Whereas grep will print a line when the line contains a string that matches an expression, find requires that the pathname exactly match the regular expression. For example: find . -regex '.*[^-_./0-9a-zA-Z].*'
 * The locate program supports both basic (the --regexp option) and extended (the --regex option) regular expressions.
 * vim supports basic regular expressions.
