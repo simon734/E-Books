@@ -219,7 +219,6 @@
 * Determining if a package is installed: rpm -q package_name
 * Displaying info about an installed package: yum info package_name
 * Finding which package installed a File: rpm -qf file_name, such as: rpm -qf /usr/bin/vim
-
 * mount – Mount a file system
     * umount – Unmount a file system
     * fsck – Check and repair a file system
@@ -331,6 +330,99 @@
     f="\t\ta string\n" #Escape sequences such as tabs and newlines.
 * During expansion, variable names may be surrounded by optional curly braces "{}". This is useful in cases where a variable name becomes ambiguous due to its surrounding context. Such as: mv $filename ${filename}1
 * A here document is an additional form of IO redirection in which we embed a bodyof text into script and feed it into the standard input of a command. Single and double quotes within here documents lose their special meaning to the shell.
-* Here documents can be used with any command that accepts standard input. If we change the redirection operation from "<<" to "<<-", the shell will ignore leading tab characters in the here document. This allows a here document to be indented, which can improve readability.
-* 
+* Here documents can be used with any command that accepts standard input. If we change the redirection operation from "<<" to "<<-", the shell will ignore leading tab characters in the here document. This allows a here document to be indented, which can improve readability. Here is an example:
+```shell
+#!/bin/bash
+# Script to retrieve a file via FTP
 
+FTP_SERVER=ftp.nl.debian.org
+FTP_PATH=/debian/dists/lenny/main/installer-i386/current/images/cdrom
+REMOTE_FILE=debian-cd_info.tar.gz
+
+ftp -n <<- _EOF_
+    open $FTP_SERVER
+    user anonymous me@linuxbox
+    cd $FTP_PATH
+    hash
+    get $REMOTE_FILE
+    bye
+    _EOF_
+ls -l $REMOTE_FILE
+```
+* The **bash** man page includes a section entitled "HERE DOCUMENTS", which has a full description of this feature.  
+* Use **local** to create local variable within functions.
+* The **if** statement has the following syntax:
+```shell
+if commands; then
+commands
+[elif commands; then
+commands...]
+[else
+commands]
+fi
+```
+If a list of commands follows **if**, the last command in the list if evaluated.
+* By convention, a value of zero indicates success and any other value indicates failure. The shell parameter**$?** contains the exit status. Man pages often includes a section entitled "Exit Status".
+* The **true** command always executes successfully and the **false** command always executes unsuccessfully.
+* The command used most frequently with **if** is **test**. The **test** command has two equivalent forms: *test expression*, and the more popular: **[ expression ] **. Note that both **test** and **[** are actually builtin commands. The expression is actually just its arguments with the **[** command requiring that the "]" character be provided as its final argument.
+```shell
+if [ $((INT % 2)) -eq 0 ]; then
+echo "INT is even."
+else
+echo "INT is odd."
+fi
+```
+See the test manual page for a list availabe options.
+* Remember to use **return** instead of **exit** in shell functions. 
+* Recent versions of **bash** support a compound command: **[[ expression ]]**. It is very similar to **test**(all of its expressions), but adds an important new string expression: **string1 =~ regex**, which returns true if *string1* is matched by the extended regular expression *regex*.
+```shell
+#!/bin/bash
+
+# test-integer2: evaluate the value of an integer.
+
+INT=-5
+
+if [[ "$INT" =~ ^-?[0-9]+$ ]]; then
+    exit 0
+else
+    echo "INT is not an integer." >&2
+    exit 1
+fi
+```
+* Another added feature of **[[ ]]** is that the **==** operator supports pattern matching the same way pathname expansion does.
+```shell
+[me@linuxbox ~]$ FILE=foo.bar
+[me@linuxbox ~]$ if [[ $FILE == foo.* ]]; then
+> echo "$FILE matches pattern 'foo.*'"
+> fi
+```
+This makes **[[ ]]** useful for evaluating file and pathnames.
+* **bash** supports the **(( ))** compound command, which is useful for operating on integers. **(( ))** is used to perform *arithmetic truth tests*. An arithmetic truth test resutls in true if the result of the arithmetic evaluation if non-zero. We can use **>**, **<** or **==** to test for equivalence, which is more natural-looking syntax for working with integers.
+* Because the compound command **(( ))** is part of the shell syntax rather than an ordinary command, and it deals only with integers, it is able to recognize variables by name and does not require expansion to be performed.
+```shell
+INT=-5
+if (( ((INT % 2)) == 0)); then
+    echo "INT is even."
+else
+    echo "INT is odd."
+fi
+```
+* Expressions can be combined by using logical operations, which are AND, OR and NOT.
+    * Logical Operators
+    <table>
+    <tr> <th> Operation</th><th> test</th> <th> [[ ]] and (( ))</th> </tr>
+    <tr> <td>AND</td><td> -a</td><td> &&</td> </td>
+    <tr> <td>OR</td><td> -o</td><td> ||</td> </tr>
+    <tr> <td>NOT</td><td> !</td><td> !</td> </tr>
+    </table>
+```shell
+if [[ INT -ge MIN_VAL && INT -le MAX_VAL ]];
+is the same as:
+if [ $INT -ge $MIN_VAL -a $INT -le $MAX_VAL ];
+```
+* Practical examples:
+```shell
+[me@linuxbox ~]$ mkdir temp && cd temp
+[me@linuxbox ~]$ [[ -d temp ]] || mkdir temp
+```
+*
