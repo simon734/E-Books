@@ -425,4 +425,52 @@ if [ $INT -ge $MIN_VAL -a $INT -le $MAX_VAL ];
 [me@linuxbox ~]$ mkdir temp && cd temp
 [me@linuxbox ~]$ [[ -d temp ]] || mkdir temp
 ```
+* read -- read values from standard input. If no variables are listed after the **read** command, a shell variable, **REPLY**, will be assigned all the input.
+* We can adjust the value of **IFS**(for Internal Field Separator) to control the separation of fields input to **read**.
+```shell
+FILE=/etc/passwd 
+read -p "Enter a username > " user_name 
+file_info=$(grep "^$user_name:" $FILE) 
+
+if [ -n "$file_info" ]; then 
+    IFS=":" read user pw uid gid name home shell <<< "$file_info" 
+    echo "User = '$user'" 
+    echo "UID = '$uid'" 
+    echo "GID = '$gid'" 
+```
+The shell allows one or more variable assignments to take place immediately before a command. These commands alter the environment for the command that follows. The effect of the assignment is temporary; only changing the environment for the duration of the command.
+
+The <<< operator indicates a *here string*, constisting of a single string.
+* `echo "foo" | read`, The command will appear to succeed but the **REPLY** variable will be always be empty, because **read** is executed in a subshell.
+* Some tricks in an example:
+```shell
+invalid_input () {
+    echo "Invalid input '$REPLY'" >&2
+        exit 1
+}
+read -p "Enter a single item > "
+# input is empty (invalid)
+[[ -z $REPLY ]] && invalid_input
+
+# input is multiple items (invalid)
+(( $(echo $REPLY | wc -w) > 1 )) && invalid_input
+
+# is input a valid filename?
+if [[ $REPLY =~ ^[-[:alnum:]\._]+$ ]]; then
+    echo "'$REPLY' is a valid filename."
+    if [[ -e $REPLY ]]; then
+    echo "And file '$REPLY' exists."
+    else
+    echo "However, file '$REPLY' does not exist."
+    fi
+# is input a floating point number?
+    if [[ $REPLY =~ ^-?[[:digit:]]*\.[[:digit:]]+$ ]]; then
+    echo "'$REPLY' is a floating point number."
+    else
+    echo "'$REPLY' is not a floating point number."
+    fi
+fi
+```
+---
+---
 *
