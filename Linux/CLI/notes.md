@@ -426,3 +426,31 @@ if [ $INT -ge $MIN_VAL -a $INT -le $MAX_VAL ];
 [me@linuxbox ~]$ [[ -d temp ]] || mkdir temp
 ```
 *
+* loop examples:
+```shell
+count=1 
+until [[ $count -gt 5 ]]; do 
+# while [[ $count -le 5 ]]; do
+        echo $count 
+        count=$((count+1)) 
+done 
+```
+Reading Files with loop:
+```shell
+while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done < distros.txt
+```
+Another way (pipe):
+```shell
+sort -k 1,1 -k 2n distros.txt | while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done
+```
+* 
