@@ -473,7 +473,33 @@ fi
 ```
 ---
 ---
-*
+* loop examples:
+```shell
+count=1 
+until [[ $count -gt 5 ]]; do 
+# while [[ $count -le 5 ]]; do
+        echo $count 
+        count=$((count+1)) 
+done 
+```
+Reading Files with loop:
+```shell
+while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done < distros.txt
+```
+Another way (pipe):
+```shell
+sort -k 1,1 -k 2n distros.txt | while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done
+```
 **bash** provides a method of tracing, implemented by the **-x** option and the **set** command with the **-x** option.
 ```shell
 #!/bin/bash -x
@@ -606,3 +632,33 @@ done
 for (( i=0; i<5; i=i+1)); do echo $i; done
 ```
 *
+=======
+* loop examples:
+```shell
+count=1 
+until [[ $count -gt 5 ]]; do 
+# while [[ $count -le 5 ]]; do
+        echo $count 
+        count=$((count+1)) 
+done 
+```
+Reading Files with loop:
+```shell
+while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done < distros.txt
+```
+Another way (pipe):
+```shell
+sort -k 1,1 -k 2n distros.txt | while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done
+```
+* 
+>>>>>>> 3f6ee9741540585bb4bee6969b201b765ddeb3cd
