@@ -660,4 +660,25 @@ $version \
 $release
 done
 ```
-* 
+---
+---
+### Chapter 34 Strings And Numbers
+* Parameter Expansion:
+  * Baisc Parameters: $a or ${a}, the later form is required if the variable is adjacent to other text, such as ${a}_file.
+  * ${parameter:-word}, If *parameter* is unset (i.e., does not exist) or is empty, this expansion results in the value of *word*. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:=word}, If *parameter* is unset or empty, this expansion results in the value of *word*. In addition,
+  the value of *word* is assigned to *parameter*. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:?word}, If *parameter* is unset or empty, this expansion causes the script to exit with an error, and the contents of *word* are sent to standard error. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:+word}, If *parameter* is unset or empty, the expansion results in nothing. If *parameter* is not empty, the value of *word* is substituted for *parameter*; however, the value of *parameter* is not changed.
+  * ${!prefix*} or ${!prefix@}, Expansions that return variable names. Both forms of the expansion perform identically.
+* String Operations. Many of these expansions are particularly well suited for operations on pathnames.
+  * ${#parameter}, expands into the length of the string contained by parameter. Normally, parameter is a string; however, if parameter is either @ or *, then the expansion results in the number of positional parameters.
+  * ${parameter:offset}, or ${parameter:offset:length}, These expansions are used to extract a portion of the string contained in parameter. The extraction begins at offset characters from the beginning of the string and continues until the end of the string, unless the length is specified.
+
+  If the value of offset is negative, it is taken to mean it starts from the end of the string rather than the beginning. Note that negative values must be preceded by a space to prevent confusion with the ${parameter:-word} expansion. length, if present, must not be less than zero.
+
+  If parameter is @, the result of the expansion is length positional parameters, starting at offset.
+  * ${parameter#pattern}, or ${parameter##pattern}, These expansions remove a leading portion of the string contained in parameter defined by pattern. pattern is a wildcard pattern like those used in pathname expansion. The difference in the two forms is that the # form removes the shortest match, while the ## form removes the longest match.
+  * ${parameter%pattern}, or ${parameter%%pattern}, These expansions are the same as the # and ## expansions above, except they remove text from the end of the string contained in parameter rather than from the beginning.
+  * ${paramter/pattern/string}, or ${paramter//pattern/string}, or ${paramter/#pattern/string}, or ${paramter/%pattern/string}. This expansion performs a search-and-replace upon the contents of parameter. If text is found matching wildcard pattern, it is replaced with the contents of string. In the normal form, only the first occurrence of pattern is replaced. In the // form, all occurrences are replaced. The /# form requires that the match occur at the beginning of the string, and the /% form requires the match to occur at the end of the string. In every form, /string may be omitted, causing the text matched by pattern to be deleted.
+* The string manipulation expansions can be used as substitues for other common commands such as **sed** or **cut**. Expansions can improve the efficiency of scripts by eliminating the use of external programs.
