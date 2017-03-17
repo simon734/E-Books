@@ -679,6 +679,44 @@ done
 
   If parameter is @, the result of the expansion is length positional parameters, starting at offset.
   * ${parameter#pattern}, or ${parameter##pattern}, These expansions remove a leading portion of the string contained in parameter defined by pattern. pattern is a wildcard pattern like those used in pathname expansion. The difference in the two forms is that the # form removes the shortest match, while the ## form removes the longest match.
+  ```shell
+  PROGNAME=${0##*/}   # use parameter expansion to get basename
+  ```
   * ${parameter%pattern}, or ${parameter%%pattern}, These expansions are the same as the # and ## expansions above, except they remove text from the end of the string contained in parameter rather than from the beginning.
   * ${paramter/pattern/string}, or ${paramter//pattern/string}, or ${paramter/#pattern/string}, or ${paramter/%pattern/string}. This expansion performs a search-and-replace upon the contents of parameter. If text is found matching wildcard pattern, it is replaced with the contents of string. In the normal form, only the first occurrence of pattern is replaced. In the // form, all occurrences are replaced. The /# form requires that the match occur at the beginning of the string, and the /% form requires the match to occur at the end of the string. In every form, /string may be omitted, causing the text matched by pattern to be deleted.
 * The string manipulation expansions can be used as substitues for other common commands such as **sed** or **cut**. Expansions can improve the efficiency of scripts by eliminating the use of external programs.
+* The **declare** command can be used to normalize strings to either upper or lowercase.
+* In addition to **declare**, there are four parameter expansions that perform upper/lowercase conversion.
+  + ${parameter,,},  Expand the value of parameter into all lowercase.
+  + ${parameter,}, Expand the value of parameter changing only the first character to lowercase.
+  + ${parameter^^}, Expand the value of parameter into all uppercase letters.
+  + ${parameter^}, Expand the value of parameter changing only the first character to uppercase (capitalization).
+  ```shell
+  if [[ $1 ]]; then
+      echo ${1,,}
+      echo ${1,}
+      echo ${1^^}
+      echo ${1^}
+  fi
+  ```
+* Specifying different number bases:
+ + number By default, numbers without any notation are treated as decimal (base 10) integers.
+ + 0number In arithmetic expressions, numbers with a leading zero are considered octal.
+ + 0xnumber Hexadecimal notation
+ + base#number number is in base, like: echo $((2#11111111))
+* Assignment operators: +=, -= *=, /=, %=, ++, --
+* Bit operators: ~, <<, >>, &, |, ^
+* Comparison operators: <=, >=, <, >, ==, != &&, ||, expr1?expr2:expr3
+* Note that performing assignment within the expression is not straightforward. The **bash** will declare an error for this: ```((a<1?a+=1:a-=1))```. The problem can be mitigated by this:
+```shell
+    ((a<1?(a+=1):(a-=1)))
+```
+* bc - An arbitrary precision calculator language. The ability to take standard input means that we can use here documents, here strings, and pipes to pass scripts. For example, `bc < foo.bc`, or `bc <<< "2+2"`.
+---
+## Chapter 35 Arrays
+---
+* Array in **bash** are limited to a single dimension, index starting from 0.
+```shell
+a[1]=foo
+echo ${a[1]}
+```
