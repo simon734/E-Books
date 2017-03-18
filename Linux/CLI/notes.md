@@ -500,6 +500,188 @@ $version \
 $release
 done
 ```
+**bash** provides a method of tracing, implemented by the **-x** option and the **set** command with the **-x** option.
+```shell
+#!/bin/bash -x
+```
+To perform a trace on a selectd portion of a script, rather than the entire script, we can use this:
+```shell
+set -x  # Turn on tracing
+...
+set +x  # Turn off tracing
+```
+* The contents of **PS4** variable can make the trace prompt more useful, such as: ```export PS4='$LINENO + '```
+
+---
+---
+
+* In bash, multiple-choice compound command is called **case**. The patterns used by **case** are the same as those used by pathname expansion. Patterns are terminated with a ")" character. 
+ **case Pattern Examples**:
+  * a)  Matches if word equals “a”.
+  * [[:alpha:]]) Matches if word is a single alphabetic character.
+  * ???)  Matches if word is exactly three characters long.
+  * *.txt)  Matches if word ends with the characters “.txt”.
+  * *)  Matches any value of word. It is good practice to include this as the last pattern in a case command, to catch any values of word that did not match a previous pattern; that is, to catch any possible invalid values.
+```shell
+read -p "enter word > "
+case $REPLY in
+    [[:alpha:]]) echo "..." ;;
+    [ABC][0-9]) echo "..." ;;
+    ???)  echo "..." ;;
+    *.txt) echo "..." ;;
+    *) echo "..." ;;
+esac
+```
+* It is also possible to combine multiple patterns using the **"|"** as a separator. This creates an "or" conditional pattern.
+```shell
+case $REPLY in
+q|Q) echo "Program terminated"
+    exit
+```
+* Performing multiple actions: In bash prior to version 4.0 there was no way for **case** to match more than one test. Modern versions of bash, add the **";;&"** notation to terminate each action.
+```shell
+read -n 1 -p "Type a character > "
+echo
+case $REPLY in
+[[:upper:]]) echo "'$REPLY' is upper case." ;;&
+[[:lower:]]) echo "'$REPLY' is lower case." ;;&
+[[:alpha:]]) echo "'$REPLY' is alphabetic." ;;&
+[[:digit:]]) echo "'$REPLY' is a digit." ;;&
+[[:graph:]]) echo "'$REPLY' is a visible character." ;;&
+[[:punct:]]) echo "'$REPLY' is a punctuation symbol." ;;&
+[[:space:]]) echo "'$REPLY' is a whitespace character." ;;&
+[[:xdigit:]]) echo "'$REPLY' is a hexadecimal digit." ;;&
+esac
+```
+----
+### Chapter32 - Positional Parameters
+* The shell provides a set of variables called *positional parameters* that contain the individual words on the command line. The variables are named 0 through 9. $0 will always contain the pathname of the program being executed.
+
+* You can actually access more than nine parameters using parameter expansion. To specify a number greater than nine, surround the number in braces. For example ${10}, ${55}, and so on.
+* The shell also provides a variable, $#, that contains the number of arguments on the command line.
+* The **shift** command causes all the parameters (except $0, which never changes ) to "move down one" each time it is executed.
+```shell
+count=1
+while [[ $# -gt 0 ]]; do
+    echo "Argument $count = $1"
+    count=$((count + 1))
+    shift
+done
+```
+* Positional parameters can also be used to pass arguments to shell functions. Such as this shell function:
+```shell
+file_info() {
+    if [[ -e $1 ]]; then
+        echo -e "\nFile Type:"
+        file $1
+        echo -e "\n File Status:"
+        stat $1
+    else
+        echo "$FUNCNAME: usage: $FUNCNAME file" >&2
+        return 1
+    fi
+}
+```
+* To manage all the positional parameters as a group, the shell provides two special parameters. They both expand into the complete list of positional parameters, but differ in rather subtle ways.
+  * $* Expands into the list of positional parameters, starting with 1.  When surrounded by double quotes, it expands into a double quoted string containing all of the positional parameters, each separated by the first character of the IFS shell variable (by default a space character).
+  * $@ Expands into the list of positional parameters, starting with 1.  When surrounded by double quotes, it expands each positional parameter into a separate word surrounded by double quotes.
+```shell
+print_params() {
+    echo "\$1 = $1"
+    echo "\$2 = $2"
+    echo "\$3 = $3"
+    echo "\$4 = $4"
+}
+pass_params() {
+    echo -e "\n" '$* :'; print_params $*
+    echo -e "\n" '"$*" :'; print_params "$*"
+    echo -e "\n" '$@ :'; print_params $@
+    echo -e "\n" '"$@" :'; print_params "$@"
+}
+pass_params "word" "words with spaces"
+```
+* The lesson to take from the above example is that even though the shell provides four different ways of getting the list of positional parameters, "$@" is by far the most useful for most situation, because it preserves the integrity of each positional parameter.
+* **bash** includes a builtin command called **getopts**, which can also be used for process command line arguments.
+
+---
+### Chapter 33 Looping with *for*
+---
+* The really powerful feature of **for** is the interesting ways we can create thelist of words.
+    * brace expansion:```for i in {A..D}; do echo $i; done
+    * pathname expansion: ```for i in distros*.txt; do echo $i; done
+    * command substitution:
+ (If the optional in *words* portion of the for command is omitted, for defaults to processing the positional parameters)
+```shell
+for i; do
+    if [[ -e $i ]]; then
+        max_words=
+        max_len=0
+        for j in $(strings $i); do
+            len=$(echo -n $j | wc -c)
+            if (( len > max_len )); then
+                max_words=$j
+                max_len=$len
+            fi
+        done
+        echo "$i: '$max_words' ($max_len  characters)"
+    fi
+done
+```
+* Another type of for loop: 
+```shell
+for (( i=0; i<5; i=i+1)); do echo $i; done
+```
+*
+=======
+* loop examples:
+```shell
+count=1 
+until [[ $count -gt 5 ]]; do 
+# while [[ $count -le 5 ]]; do
+        echo $count 
+        count=$((count+1)) 
+done 
+```
+Reading Files with loop:
+```shell
+while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done < distros.txt
+```
+Another way (pipe):
+```shell
+sort -k 1,1 -k 2n distros.txt | while read distro version release; do
+printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+$distro \
+$version \
+$release
+done
+```
+---
+---
+### Chapter 34 Strings And Numbers
+* Parameter Expansion:
+  * Baisc Parameters: $a or ${a}, the later form is required if the variable is adjacent to other text, such as ${a}_file.
+  * ${parameter:-word}, If *parameter* is unset (i.e., does not exist) or is empty, this expansion results in the value of *word*. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:=word}, If *parameter* is unset or empty, this expansion results in the value of *word*. In addition,
+  the value of *word* is assigned to *parameter*. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:?word}, If *parameter* is unset or empty, this expansion causes the script to exit with an error, and the contents of *word* are sent to standard error. If *parameter* is not empty, the expansion results in the value of *parameter*.
+  * ${parameter:+word}, If *parameter* is unset or empty, the expansion results in nothing. If *parameter* is not empty, the value of *word* is substituted for *parameter*; however, the value of *parameter* is not changed.
+  * ${!prefix*} or ${!prefix@}, Expansions that return variable names. Both forms of the expansion perform identically.
+* String Operations. Many of these expansions are particularly well suited for operations on pathnames.
+  * ${#parameter}, expands into the length of the string contained by parameter. Normally, parameter is a string; however, if parameter is either @ or *, then the expansion results in the number of positional parameters.
+  * ${parameter:offset}, or ${parameter:offset:length}, These expansions are used to extract a portion of the string contained in parameter. The extraction begins at offset characters from the beginning of the string and continues until the end of the string, unless the length is specified.
+
+  If the value of offset is negative, it is taken to mean it starts from the end of the string rather than the beginning. Note that negative values must be preceded by a space to prevent confusion with the ${parameter:-word} expansion. length, if present, must not be less than zero.
+
+  If parameter is @, the result of the expansion is length positional parameters, starting at offset.
+  * ${parameter#pattern}, or ${parameter##pattern}, These expansions remove a leading portion of the string contained in parameter defined by pattern. pattern is a wildcard pattern like those used in pathname expansion. The difference in the two forms is that the # form removes the shortest match, while the ## form removes the longest match.
+  * ${parameter%pattern}, or ${parameter%%pattern}, These expansions are the same as the # and ## expansions above, except they remove text from the end of the string contained in parameter rather than from the beginning.
+  * ${paramter/pattern/string}, or ${paramter//pattern/string}, or ${paramter/#pattern/string}, or ${paramter/%pattern/string}. This expansion performs a search-and-replace upon the contents of parameter. If text is found matching wildcard pattern, it is replaced with the contents of string. In the normal form, only the first occurrence of pattern is replaced. In the // form, all occurrences are replaced. The /# form requires that the match occur at the beginning of the string, and the /% form requires the match to occur at the end of the string. In every form, /string may be omitted, causing the text matched by pattern to be deleted.
+* The string manipulation expansions can be used as substitues for other common commands such as **sed** or **cut**. Expansions can improve the efficiency of scripts by eliminating the use of external programs.
 * Dangerous code:
 ```shell
 cd $dir_name
