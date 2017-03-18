@@ -685,7 +685,28 @@ done
   * ${parameter%pattern}, or ${parameter%%pattern}, These expansions are the same as the # and ## expansions above, except they remove text from the end of the string contained in parameter rather than from the beginning.
   * ${paramter/pattern/string}, or ${paramter//pattern/string}, or ${paramter/#pattern/string}, or ${paramter/%pattern/string}. This expansion performs a search-and-replace upon the contents of parameter. If text is found matching wildcard pattern, it is replaced with the contents of string. In the normal form, only the first occurrence of pattern is replaced. In the // form, all occurrences are replaced. The /# form requires that the match occur at the beginning of the string, and the /% form requires the match to occur at the end of the string. In every form, /string may be omitted, causing the text matched by pattern to be deleted.
 * The string manipulation expansions can be used as substitues for other common commands such as **sed** or **cut**. Expansions can improve the efficiency of scripts by eliminating the use of external programs.
-* The **declare** command can be used to normalize strings to either upper or lowercase.
+* Dangerous code:
+```shell
+cd $dir_name
+rm *
+``` 
+Defensive programming:
+```shell
+# Delete files in directory $dir_name
+if [[ ! -d "$dir_name" ]]; then
+	echo "No such directory: '$dir_name'" >&2
+	exit 1
+fi
+if ! cd $dir_name; then
+	echo "Cannot cd to '$dir _name'" >&2
+	exit 1
+fi
+if ! rm *; then
+	echo "File deletion failed. Check results." >&2
+	exit 1
+fi
+```
+`* The **declare** command can be used to normalize strings to either upper or lowercase.
 * In addition to **declare**, there are four parameter expansions that perform upper/lowercase conversion.
   + ${parameter,,},  Expand the value of parameter into all lowercase.
   + ${parameter,}, Expand the value of parameter changing only the first character to lowercase.
