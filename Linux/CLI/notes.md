@@ -741,3 +741,148 @@ fi
 a[1]=foo
 echo ${a[1]}
 ```
+* Multiple values may be assinged using this syntax: `name=(value1 value2 ...)`, Two ways:
+```shell
+days=(Sun Mon Tue Wed Thu Fri Sat)
+days=([0]=Sun [1]=Mon [2]=Tue [3]=Wed [4]=Thu [5]=Fri [6]=Sat)
+```
+* Output the entire contents of an array. The subscripts * and @ can be used to access every element in an array. As with positional parameters, the @ notation is the most useful of the two.
+```shell
+animals=("a dog" "a cat" "a fish")
+for i in ${animals[*]}; do echo $i; done
+for i in ${animals[@]}; do echo $i; done
+for i in "${animals[*]}"; do echo $i; done
+for i in "${animals[@]}"; do echo $i; done
+```
+* Determine the number of array elements:
+```shell
+a[100]=foo
+echo ${#a[@]}   // output 1
+echo $[#a[100]] // output 3
+```
+* Find the subscripts used by an array. Two forms: ${!array[*]}, or ${!array[@]}. The @ form enclosed in quotes is the most useful.
+```shell
+foo=([2]=a [4]=b [6]=c)
+for i in "${!foo[@]}"; do echo $i; done
+```
+* Add elements to the end of an array, using the += assignment operator, fox example, `foo+=(d e f)`
+* Sort an array. The shell has no direct way of doing this, but it is not hard to do with a little coding.
+```shell
+a_sorted=($(for i in "${a[@]}"; do echo $i; done | sort))
+```
+* Delete an array or single array element, using the **unset** command. For example, `unset 'foo[2]'`. Notice that the array element must be quoted to prevent the shell from performing pathname expansion.
+* Interestingly, the assignment of an empty value to an array does not empty its contents. Any reference to an array variable without a subscript refers to element zero of the array.
+```shell
+foo=(a b c d e f)
+foo=
+echo ${foo[@]}  # output: b c d e f
+foo=A
+echo ${foo[@]}  # output: A b c d e f
+```
+* Associative arrays use strings rather than integers as array indexes. Assocative arrays must be created with the **declare** command using the new **-A** option.
+---
+## Chapter 36 Exotica
+---
+* **bash** provides two ways to group commands together.
+Group command:
+` { command1; command2; [comands3; ...] } `
+Subshell:
+` (command1; command2; [command3;...]) `
+* It is important to note that, due to the way **bash** implements group commands, the braces must be separated from the commands by a space and the last command must be terminated with eithera semicolon or a newline prior to the closing brace.
+* Group commands are used to manage redirection.
+```shell
+{ ls -l; echo "Listing of foo.txt"; cat foo.txt; } > output.txt
+```
+or
+```shell
+(ls -l; echo "Listing of foo.txt"; cat foo.txt) > output.txt
+```
+Another
+```shell
+{ ls -l; echo "Listing of foo.txt"; cat foo.txt; } | lpr
+```
+* Example:
+```shell
+declare -A files file_group file_owner groups owners
+
+if [[ ! -d "$1" ]]; then
+    echo "Usage: array-2 dir" >&2
+    exit 1
+fi
+
+for i in "$1"/*; do
+    owner=$(stat -c %U "$i")
+    group=$(stat -c %G "$i")
+    files["$i"]="$i"
+    file_owner["$i"]=$owner
+    file_group["$i"]=$group
+    ((++owners[$owner]))
+    ((++groups[$group]))
+done
+
+# List the collected files
+{ for i in "${files[@]}"; do
+    printf "%-40s %-10s %-10s\n" \
+        "$i" ${file_owner["$i"]} ${file_group["$i"]}
+done
+} | sort
+echo
+
+# List owners
+echo "File owners:"
+{ for i in "${!owners[@]}"; do
+    printf "%-10s: %5d file(s)\n" "$i" ${owners["$i"]}
+done
+} | sort
+echo
+
+# List groups
+echo "File group ownerss:"
+{ for i in "${!groups[@]}"; do
+    printf "%-10s: %5d file(s)\n" "$i" ${groups["$i"]}
+done
+} | sort
+```
+* Because commands in pipelines are always executed in subshells, any command that assigns variables will not exist when the subshell terminates. The shell provides *process substitution* that can be used to work around this problem.
+ + For process that produce standard output: <(list)
+ + For process that intake standard input: >(list)
+ + where *list* is a list of commands.
+```shell
+read < <(echo "foo")
+echo $REPLY
+echo <(echo "foo")
+```
+* Process substitution is often used with loops containing **read**.
+```shell
+while read attr links owner group size date time filename; do
+    cat <<- EOF
+        FileName:   $filename
+        Size:       $size
+        Owner:      $owner
+        Group:      $group
+        Modified:   $date $time
+        Links:      $links
+        Attributes: $attr
+EOF
+done < <(ls -l | tail -n +2)
+```
+* `trap argument signal [signal..]`. It is common practice to specify a shell function as the command.
+* Temporary files. One way to create a non-predictable (but still descriptive) name is to do something like:
+```shell
+tempfile=/tmp/$(basename $0).$$.$RANDOM
+```
+* A better way is to use the **mktemp** program.
+```shell
+tempfile=$(mktemp /tmp/foobar.$$.XXXXXXXXX)
+```
+* For scripts that are executed by regular uses, it may be wise to avoid the use of the **/tmp** directory and create a directory for the temporary files within the user home directory:
+```shell
+ [[ -d $HOME/tmp ]] || mkdir $HOME/tmp
+```
+* Asynchronous execution. wait command.o
+* The **$!* shell parameter will always contain the process ID of the last job put into the backgroud.
+```shell
+async-child &
+pid=$!
+```
+* Named pipes
