@@ -5,6 +5,20 @@
 
 ### Perceptrons
 
+1. In much modern work on neural networks, the main neuron model used is one called the __sigmoid__ neuron.
+
+2. A perceptron can weigh up different kinks of evidence in order to make decisions.
+
+3. The **perceptron** is an algorithm for **supervised learning** of **binary classifiers** (functions that can decide whether an input, represented by a vector of numbers, belongs to some specific class or not):
+   $$
+   f(x) =
+     \begin{cases}
+       1       & \quad \text{if } w \cdot x \text{ + b > 0}\\
+       0  	   & \quad  \text{ otherwise}
+     \end{cases}
+   $$
+   ​						where w is a vector of real-valued weights.
+
 ### Sigmoid
 
 * A small change in the weights or bias of any single perceptron in the network can sometimes cause the output of that perceptron to completely flip, say from 0 to 1. That flip may then cause the behaviour of the rest of the network to completely change in some very complicated way. That makes it difficult to see how to gradually modify the weights and biases so that the network get closer to the desired behaviour.
@@ -34,3 +48,38 @@
 
 ### A simple network to classify handwritten digits
 
+### Learning with gradient descent
+
+* _cost function_ :
+  $$
+  C(w, b) = \frac {1}{2n} \sum_x ||y(x) - a||^2
+  $$
+  We'll call $C$ the _quadratic_ cost function; it's also known as the _mean squared error_ or just *MSE*.
+
+  For $C(v), v=(v_1, v_2,...)$,  calculus tells us that $C$ changes as follows:
+  $$
+  \Delta C \approx \frac {\partial C} {\partial v_1}\Delta v_1 + \frac {\partial C}{\partial v_2}\Delta v_2
+  $$
+
+* It helps to define:
+  $$
+  \Delta v \equiv (\Delta v_1,  \Delta v_2)^T
+  $$
+
+  $$
+  \nabla C \equiv (\frac {\partial C}{\partial v_1}, \frac {\partial C}{\partial v_2})^T 
+  $$
+
+  With these, $\Delta C$  can be rewritten as:
+  $$
+  \Delta C \approx \nabla C \cdot \Delta v
+  $$
+  The gradient vector $\nabla C$ relates changes in $v$ to changes in $C$.
+
+* Suppose $\Delta v = -\eta \nabla C$, where $\eta$ is a small, positive *learning rate*, then we have $\Delta C \approx -\eta\nabla C \cdot \nabla C = -\eta ||\nabla C||^2$ ,  which is:
+  $$
+  v \to v^{\prime} = v - \eta \nabla C 
+  $$
+  The way the gradient descent algorithm works is to repeatedly compute the gradient $\nabla C$.
+
+* ​
