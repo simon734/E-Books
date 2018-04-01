@@ -67,7 +67,7 @@
   $$
 
   $$
-  \nabla C \equiv (\frac {\partial C}{\partial v_1}, \frac {\partial C}{\partial v_2})^T 
+  \nabla C \equiv (\frac {\partial C}{\partial v_1}, \frac {\partial C}{\partial v_2})^T
   $$
 
   With these, $\Delta C$  can be rewritten as:
@@ -78,8 +78,24 @@
 
 * Suppose $\Delta v = -\eta \nabla C$, where $\eta$ is a small, positive *learning rate*, then we have $\Delta C \approx -\eta\nabla C \cdot \nabla C = -\eta ||\nabla C||^2$ ,  which is:
   $$
-  v \to v^{\prime} = v - \eta \nabla C 
+  v \to v^{\prime} = v - \eta \nabla C
   $$
   The way the gradient descent algorithm works is to repeatedly compute the gradient $\nabla C$.
 
-* ​
+* Gradient descent can be viewed as a way of taking small steps in the direction which does the most to immediately decrease $C$.
+
+* _Stochastic gradient descent_ works by randomly picking out a small number $m$ of randomly chose training inputs, and refer to them as a _mini-batch_. Provided the sample size $m$ is large enough we expect that the average value of the $\nabla C_{X_j}$ will be roughly equal to the average over all $\nabla C_x$, that is, 
+  $$
+  \frac{\sum_{j=1}^{m} \nabla C_{X_j}}{m} \approx \frac{\sum_x \nabla C_x}{n} = \nabla C
+  $$
+
+* When we've exhausted the training input, which is  said to complete an _epoch_ of training, we start over with a new training epoch.
+
+* The estimate won't be perfect-there will be statistical fluctuations- but it doesn't need to be perfect: all we really care about is moving in a general direction that will help decrease $C$, and that means we don't need an exact computation of the gradient. In practice, stochastic gradient descent is a commonly used and powerful technique for learning in neural networks.
+
+* An extreme version of gradient descent is to use a mini-batch size of just 1. This procedure is known as _online_, _on-line_, or _incremental learning_.
+
+###Implementing our network to classify digits
+
+* dd
+
