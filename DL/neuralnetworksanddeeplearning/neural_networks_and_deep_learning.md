@@ -81,6 +81,13 @@
   v \to v^{\prime} = v - \eta \nabla C
   $$
   The way the gradient descent algorithm works is to repeatedly compute the gradient $\nabla C$.
+  $$
+  w_k \to w_k^{\prime} = w_k - \frac{\eta}{m} \sum_j \frac{\part C_{X_j}}{\part w_k}
+  $$
+
+  $$
+  b_k \to b_k^{\prime} = b_k - \frac{\eta}{m} \sum_j \frac{\part C_{X_j}}{\part b_k}
+  $$
 
 * Gradient descent can be viewed as a way of taking small steps in the direction which does the most to immediately decrease $C$.
 
@@ -97,5 +104,54 @@
 
 ###Implementing our network to classify digits
 
-* dd
+* ..
 
+
+##Chapter 2: How the backpropagation algorithm works
+
+* Today, the backpropagation algorithm is the workhorse of learning in neural networks.
+
+### Warm up: a fast matrix-based approach to computing the output from a neural network
+
+* We'll use $w_{jk}^l$ to denote the weight for the connection from the $k^{th}$ neuron in the $(l - 1)^{th}$ layer to the $j^{th}$ neuron in the $l^{th}$ layer. Similarly, we use $b_j^l$ for the bias of the $j^{th}$ neuron in the $l^{th}$ layer, as $a_j^l$.
+
+  ![img](http://neuralnetworksanddeeplearning.com/images/tikz16.png)
+
+  ![img](http://neuralnetworksanddeeplearning.com/images/tikz17.png)
+
+* With these notations, we have: 
+  $$
+  a_j^l = \sigma(\sum_k w_{jk}^la_k^{l-1} + b_j^l)
+  $$
+  We define _weight matrix_ $w^l$ for each layer $l$: the entries are the weights connecting to the $l^{th}$ layer of neurons, that is, the entry in the $j^{th}$ row and $k^{th}$ column is $w_{jk}^l$. Similarly, $b^l$ for _bias vector_, $a^l$ _activation vector_.
+
+* A vectorized form:
+  $$
+  a^l = \sigma(w^la^{l-1} + b^l)
+  $$
+  that is, we just apply the weight matrix to the activations in the previous layer. We call $z^l \equiv w^l a^{l - 1} + b^l$ the _weighted input_ to the neurons in the layer $l$. So $a^l = \sigma(z^l)$. It's worth noting that $z^l$ has components $z_j^l = \sum_kw_{jk}^l a_k^{l - 1} + b_j^l$, that is, $z_j^k$ is just the weighted input to the activation function for neuron $j$ in layer $l$.
+
+### The two assumptions we need about the cost function
+
+* Recall the quadratic cost function: 
+
+$$
+C = \frac{1}{2n} \sum_z\|y(x) - a^L(x)\|^2
+$$
+
+ 	L denote the number of layers in the network; $a^L = a^L(x)$ is the vector of activations output from the network where x is the input.
+
+* The first assumption is that the cost function can be written as an average $C = \frac{1}{n}\sum_x C_x$ over cost function $C_x$ for individual training examples, x. For the quadratic cost, $C_x = \frac{1}{2}\|y - a^L\|^2$. The reason of this assumption is because what backpropagation actually lets us do is compute the partial derivatives   $\part C_x / \part w$ and $\part C_x / \part b$  for a single training example. We then recover $\part C / \part w$  and $\part C / \part b$ by averaging over training examples.
+
+* The second assumption is that the cost function can be written as a function of the outputs from the neural network. The quadratic cost function satisfies this requirement, since the quadratic cost for a single training example x may be written as:
+  $$
+  C = \frac{1}{2}\|y - a^L\|^2 = \frac{1}{2}\sum_j(y_j - a_j^L)^2
+  $$
+  thus is a function of the output activations.
+
+### The Hadamard product, $s \odot t$
+* The components of $s \odot t$ are just $(s \odot t)_j = s_jt_j$.
+
+### The four fundamental equations behind backpropagation
+
+* ​
