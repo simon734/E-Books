@@ -154,4 +154,111 @@ $$
 
 ### The four fundamental equations behind backpropagation
 
-* ​
+* Backpropagation is about understanding how changing the weights and biases in a network changes the cost function. Ultimately, this means computing the partial derivatives $\part C/ \part w_{jk}^l$ and $\part C/\part b_b^l$.
+
+* We define the error $\delta _j^l$ of neuron $j$ in layer $l$ by:  
+  $$
+  \delta _j^l \equiv \frac{\part C}{\part z_j^l}
+  $$
+
+* __An equation for the error in the output layer, $\delta ^L$__: The components of $\delta^L$ are given by
+
+* $$
+  \delta^L_j = \frac{\part C}{\part a_j^L}\sigma^{\prime}(z_j^L)
+  $$
+
+* $\part C/\part a_j^L$ measures how fast the cost is changing as a function of the $j^{th}$ output activation.
+
+* $\sigma^{\prime}(z_j^L)$ measures how fast the activation function $\sigma$ is changing at $z_j^L$.
+
+* If we're using the quadratic cost function then $C = \frac{1}{2} \sum_j (y_j - a_j^L)^2$, and so $\part C/ \part a_j^L = (a_j^L - y_j)$, which obviously is easily computable.
+
+* It's easy to rewrite the equation in a matrix-based form, as
+
+* $$
+  \delta^L = \nabla_a C \odot \sigma^{\prime}(z^L)
+  $$
+
+* $\nabla_a C$ is defined to be a vector whose components are the partial derivatives $\part C/\part a_j^L$. You can think of $\nabla_a C$ as expressing the rate of change of $C$ with respect to the output activations. In the case of the quadratic cost we have $\nabla_a C = (a^L - y)$,  and so the fully matrix-based form becomes
+  $$
+  \delta^L = (a^L - y) \odot \sigma^{\prime}(z^L)
+  $$
+
+* __An equation for the error $\delta^l$ in terms of the error in the next layer, $\delta^{l+1}$ :__  In particular
+  $$
+  \delta^l = ((w^{l+1})^T \delta^{l+1}) \odot \sigma^{\prime}(z^l)
+  $$
+
+* __An equation for the rate of change of the cost with respect to any bias in the network:__ 
+  $$
+  \frac{\part C}{\part b_j^l} = \delta_j^l
+  $$
+
+* __An equation for the rate of change of the cost with respect to any weight in the network:__
+  $$
+  \frac{\part C}{\part w_{jk}^l} = a_k^{l-1}\delta_j^l
+  $$
+  The equation can be rewritten in a less index-heavy notation as
+  $$
+  \frac{\part C}{\part w} = a_{in}\delta_{out}
+  $$
+  where it's understood that $a_{in}$ is the activation of the neuron input to the weight $w$, and $\delta_{out}$ is the error of the neuron output from the weight $w$. One consequence of this equation is that weights output from low-activation neurons learn slowly.
+
+* When $\sigma(z_j^L)$ is  approximately 0 or 1, we will have $\sigma^{\prime}(z_j^L) \approx 0$. In this case it's common to say the output neuron has _saturated_ and, as a result, the weight or bias has stopped learning (or is learning slowly). And $\delta_j^l$ is likely to get small if the neuron is near saturation.
+
+* The four fundamental equations turn out to hold for any activation function, not just the standard sigmoid function. The proofs don't use any special properties of $\sigma$. And so we can use these equations to _design_ activation functions which have particular desired learning properties.
+
+
+
+### Proof of the four fundamental equations
+
+* $$
+  \delta^L_j = \frac{\part C}{\part z_j^L} = \sum_k \frac{\part C}{\part a_k^L} \frac{\part a_k^L}{\part z_j^L} = \frac{\part C}{\part a_j^L} \frac{\part a_j^L}{\part z_j^L} = \frac{\part C}{\part a_J^L} \sigma^{\prime}(z_j^L)
+  $$
+
+* $$
+  \delta_j^l = \frac{\part C}{\part z_j^l} = \sum_k \frac{\part C}{\part z_k^{l+1}} \frac{\part z_k^{l+1}}{\part z_j^l} = \sum_k \frac{\part z_k^{l+1}}{\part z_j^l} \delta_k^{l+1}
+  $$
+
+  $$
+  z_k^{l+1} = \sum_j w_{kj}^{l+1}a_j^l + b_k^{l+1} = \sum_j w_{kj}^{l+1}\sigma(z_j^l) + b_k^{l+1}
+  $$
+
+  $$
+  \frac{\part z_k^{l+1}}{\part z_j^l} = w_{kj}^{l+1} \sigma^{\prime}(z_j^l)
+  $$
+
+  $$
+  \delta_k^l = \sum_j w_{kj}^{l+1} \delta_k^{l+1} \sigma^{\prime}(z_j^l).
+  $$
+
+  This is written in component form.
+
+### The backpropagation algorithm
+
+* The backpropagation equations provide us with a way of computing the gradient of the cost function.
+
+  1. **Input** x: Set the corresponding activation $a^1$ for the input layer.
+
+  2. **Feedforward:**  For each $l = 2, 3, ..., L$ compute the $z^l = w^l a^{l-1} + b^l$ and $a^l = \sigma(z^l)$.
+
+  3. **Output err $\delta^L$ :** Compute the vector $\delta^L = \nabla _a C \odot  \sigma^{\prime}(z^L)$ .
+
+  4. **Backpropagate the error:** For each $l = L - 1, L -2, ..., 2$ compute $\delta^l = ((w^{l+1})^T \delta^{l+1}) \odot \sigma^{\prime}(z^l)$.
+
+  5. **Output:** The gradient of the cost function is given by 
+     $$
+     \frac{\part C}{\part w_{jk}^l} = a_k^{l-1}\delta_j^l  and \frac{\part C}{\part b_j^l} = \delta_j^l
+     $$
+
+* The backward movement is a consequence of the fact that the cost is a function of output from the network. To understand how the cost varies with earlier weights and biases we need to repeatedly apply the chain rule, working backward through the layers to obtain usable expressions.
+
+* In practice, it's common to combine backpropagation with a learning algorithm such as stochastic gradient descent, in which we compute the gradient for many training examples.
+
+  1. **Input a set of training examples**
+  2. **For each training example x:** Set the corresponding input activation $a^{x, 1}$, and perform the following steps:
+     * **Feedforward:** For each $l = 2, 3, ..., L$ compute $z^{x, l} = w^la^{x, l-1} + b$ and $a^{x, l} = \sigma(z^{x, l})$.
+     * **Output error $\delta^{x, L}$ :** Compute the vector $\delta^{x, L} = \nabla_a C_x \odot \sigma^{\prime}(z^{x, L})$.
+     * **Backpropagate the error:** For each $l = L -1, L -2, ..., 2$ compute $\delta^{x, l} = ((w^{l+1})^T \delta^{x, l+1}) \odot \sigma^{\prime}(z^{x, l})$.
+  3. **Gradient descent:** For each $l = L, L - 1, ..., 2$ update the weights according to the rule $w^l  \to w^l - \frac{\eta}{m}\sum_x \delta^{x, l}(a^{x, l-1})^T$ and the biases according to the rule $b^l \to b^l - \frac{\eta}{m} \sum_x \delta^{x, l}$.
+
