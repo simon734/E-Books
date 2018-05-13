@@ -262,3 +262,35 @@ $$
      * **Backpropagate the error:** For each $l = L -1, L -2, ..., 2$ compute $\delta^{x, l} = ((w^{l+1})^T \delta^{x, l+1}) \odot \sigma^{\prime}(z^{x, l})$.
   3. **Gradient descent:** For each $l = L, L - 1, ..., 2$ update the weights according to the rule $w^l  \to w^l - \frac{\eta}{m}\sum_x \delta^{x, l}(a^{x, l-1})^T$ and the biases according to the rule $b^l \to b^l - \frac{\eta}{m} \sum_x \delta^{x, l}$.
 
+
+
+
+## Chapter 3 Improving the way neural networks learn
+
+### The cross-entropy cost function
+
+* Using the quadratic cost function, $\sigma^{\prime}(z)$ causes the learning slowdown.
+
+## Introducing the cross-entropy cost function
+
+* We define the cross-entropy cost function for an output neuron by:
+  $$
+  C = -\frac{1}{n} \sum_x [y ln a + (1 - y) ln(1 -a)]
+  $$
+
+* Two properties make it reasonable to interpret the cross-entropy as a cost function. First, it's non-negative, that is, $C > 0$. Second, if the neuron's actual output is close to the desired output for all training inputs, x, then the cross-entropy will be close to zero.
+
+* It avoids the problem of learning slowing down:
+  $$
+  \frac{\part C}{\part w_j} = - \frac{1}{n} \sum_x (\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)}) \frac{\part \sigma}{\part w_j} 
+   =  - \frac{1}{n} \sum_x (\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)})  \sigma^{\prime}(z)x_j = \frac{1}{n} \sum_x \frac{\sigma^{\prime}(z) x_j}{\sigma(z)(1 - \sigma(z))} (\sigma(z) - y) = \frac{1}{n} \sum_x x_j (\sigma(z) - y).
+  $$
+  It tells us that the rate at which the weigh learns is controlled by $\sigma(z) - y$, i.e., by the error in the output. The larger the error, the faster the neuron will learn. In particular, it avoids the learning slowdown caused by the $\sigma^{\prime}(z)$  term in the analogous equation for the quadratic cost.
+
+* Similarly, for the bias:
+  $$
+  \frac{\part C}{\part b} = \frac{1}{n} \sum_x(\sigma(z) - y)
+  $$
+
+* d
+
