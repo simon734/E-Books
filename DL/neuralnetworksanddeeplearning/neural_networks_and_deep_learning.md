@@ -271,7 +271,7 @@ $$
 
 * Using the quadratic cost function, $\sigma^{\prime}(z)$ causes the learning slowdown.
 
-## Introducing the cross-entropy cost function
+### Introducing the cross-entropy cost function
 
 * We define the cross-entropy cost function for an output neuron by:
   $$
@@ -282,8 +282,10 @@ $$
 
 * It avoids the problem of learning slowing down:
   $$
-  \frac{\part C}{\part w_j} = - \frac{1}{n} \sum_x (\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)}) \frac{\part \sigma}{\part w_j} 
-   =  - \frac{1}{n} \sum_x (\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)})  \sigma^{\prime}(z)x_j = \frac{1}{n} \sum_x \frac{\sigma^{\prime}(z) x_j}{\sigma(z)(1 - \sigma(z))} (\sigma(z) - y) = \frac{1}{n} \sum_x x_j (\sigma(z) - y).
+  \frac{\part C}{\part w_j} = - \frac{1}{n} \sum_x \left(\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)}\right) \frac{\part \sigma}{\part w_j} \\
+   =  - \frac{1}{n} \sum_x \left(\frac{y}{\sigma(z)} - \frac{(1 -y)}{1 - \sigma(z)}\right)  \sigma^{\prime}(z)x_j \\  
+   = \frac{1}{n} \sum_x \frac{\sigma^{\prime}(z) x_j}{\sigma(z)(1 - \sigma(z))} (\sigma(z) - y)   \\
+   = \frac{1}{n} \sum_x x_j (\sigma(z) - y).
   $$
   It tells us that the rate at which the weigh learns is controlled by $\sigma(z) - y$, i.e., by the error in the output. The larger the error, the faster the neuron will learn. In particular, it avoids the learning slowdown caused by the $\sigma^{\prime}(z)$  term in the analogous equation for the quadratic cost.
 
@@ -292,5 +294,31 @@ $$
   \frac{\part C}{\part b} = \frac{1}{n} \sum_x(\sigma(z) - y)
   $$
 
-* d
+* It's easy to generalize the cross-entropy to many-neuron multi-layer networks:
+  $$
+  C = -\frac{1}{n} \sum_x\sum_j [y_j \text{ln} a_j^L + (1 - y_j)\text{ln}(1 - a_j^L)] .
+  $$
+
+* The cross-entropy is nearly always a better choice than the quadratic cost, provided the output neurons are sigmoid neurons.
+
+* The cross-entropy is still minimized when $\sigma(z) = y$ for all training inputs. When this is the case the cross-entropy has the value:
+  $$
+  C = - \frac{1}{n} \sum_x [y \text{ln}y + (1 - y) \text{ln}(1 - y)]
+  $$
+  The quantity $- [y \text{ln}y + (1 - y) \text{ln}(1 - y)]$ is sometimes known as the **binary entropy**.
+
+* For the cross-entropy cost the output error $\delta^L$ for a single training example $x$ is given by:
+  $$
+  \delta^L = a^L - y
+  $$
+  So the partial derivative with respect to the weights in the output layer is given by
+  $$
+  \frac{\part C}{\part w_{jk}^L} = \frac{1}{n} \sum_x a_k^{L-1} (a_j^L - y_j)
+  $$
+
+
+
+### Using the cross-entropy to classify MNIST digits
+
+* 
 
